@@ -12,12 +12,18 @@ import jade.lang.acl.ACLMessage;
 import java.awt.Color;
 public class TicAgent extends Agent {
     private TicAgentGUI ticGui; 
-    int [][] tictactoe = {{-1,-1,-1},{-1,-1,-1},{-1,-1,-1}}; 
+    public int [][] board = new int[8][8]; 
     boolean turn = true; // turn
     int step = 0;
     int row, column;
    
     protected void setup(){
+        for (int i=0; i < 8 ; i++) {
+            for (int j=0; j < 8 ; j++) {
+                board[i][j] = -1;
+            }
+        }
+        
         System.out.println("Tic-agent "+getAID().getName()+" is ready.");   
 
         // Show the GUI to interact with the user   
@@ -42,7 +48,7 @@ public class TicAgent extends Agent {
         public void action(){
             if (step == 0) {
                 ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-                msg.setContent( "Let's play tictactoe!" );
+                msg.setContent( "Let's play board!" );
                 msg.addReceiver( new AID( "tac", AID.ISLOCALNAME) );
                 System.out.println("tic -> tac: "+ msg.getContent());
                 send(msg);
@@ -72,7 +78,7 @@ public class TicAgent extends Agent {
                 if ((msg != null) && (!msg.getContent().equals((String) lastMsg))){
                     int r = Integer.parseInt(String.valueOf(msg.getContent().charAt(0)))-1;
                     int c = Integer.parseInt(String.valueOf(msg.getContent().charAt(1)))-1;
-                    tictactoe[r][c] = 0;
+                    board[r][c] = 0;
                     javax.swing.JButton btn = ticGui.getButton(r*3+c);
                     btn.setBackground(Color.green);
                     ticGui.activateButton();
@@ -98,7 +104,7 @@ public class TicAgent extends Agent {
         setTurn(false);
         row = Integer.parseInt(String.valueOf(bt.charAt(3)))-1;
         column = Integer.parseInt(String.valueOf(bt.charAt(4)))-1;
-        tictactoe[row][column] = 1;
+        board[row][column] = 1;
         // kirim berita ke tac
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 	msg.setContent(""+bt.charAt(3)+bt.charAt(4));

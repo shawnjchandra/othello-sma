@@ -13,13 +13,19 @@ import java.awt.Color;
 public class TacAgent extends Agent 
 {
     private TacAgentGUI tacGui; 
-    public int [][] tictactoe = {{-1,-1,-1},{-1,-1,-1},{-1,-1,-1}}; 
+    public int [][] board = new int[8][8];
     boolean turn = false; // turn
     int step = 0;
     int row, column;
     String lastMsg = "";
 
     protected void setup() {
+        for (int i=0; i < 8 ; i++) {
+            for (int j=0; j < 8 ; j++) {
+                board[i][j] = -1;
+            }
+        }
+        
         // Printout a welcome message   
         System.out.println("Tac-agent "+getAID().getName()+" is ready.");   
 
@@ -75,7 +81,7 @@ public class TacAgent extends Agent
                     lastMsg = msg.getContent();
                     int r = Integer.parseInt(String.valueOf(msg.getContent().charAt(0)))-1;
                     int c = Integer.parseInt(String.valueOf(msg.getContent().charAt(1)))-1;
-                    tictactoe[r][c] = 0;
+                    board[r][c] = 0;
                     javax.swing.JButton btn = tacGui.getButton(r*3+c);
                     btn.setBackground(Color.blue);
                     tacGui.activateButton();
@@ -97,7 +103,7 @@ public class TacAgent extends Agent
         setTurn(false);
         row = Integer.parseInt(String.valueOf(bt.charAt(1)))-1;
         column = Integer.parseInt(String.valueOf(bt.charAt(2)))-1;
-        tictactoe[row][column] = 1;
+        board[row][column] = 1;
         // kirim berita ke tic
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 	msg.setContent(""+bt.charAt(1)+bt.charAt(2));
