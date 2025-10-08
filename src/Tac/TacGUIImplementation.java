@@ -60,7 +60,7 @@ public class TacGUIImplementation extends javax.swing.JFrame implements TacAgent
             
             for (Component col : row.getComponents()) {
                 JButton btn = (JButton) col;
-                btn.setName("Btn"+(i*8+j));
+                btn.setName("Btn_"+(i*8+j));
                 btn.addActionListener(btnListener);
                 mapLLToButton.put((i*8+j), btn);
 //                System.out.println("Tac: "+(i*8+j) + " "+ i +" "+j +" "+ btn.getName());
@@ -1401,7 +1401,8 @@ public class TacGUIImplementation extends javax.swing.JFrame implements TacAgent
         if (btn.isEnabled() && myAgent.isTurn()) {
             btn.setBackground(Color.blue);
             deactivateButton();
-            myAgent.updateBoard(btn.getName());
+            String btnLL = btn.getName().substring(btn.getName().indexOf("_")+1);
+            myAgent.updateBoard(btnLL);
             notifyUser(btn.getName()+" is pressed.");
         }         
     }

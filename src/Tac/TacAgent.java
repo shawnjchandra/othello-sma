@@ -85,8 +85,8 @@ public class TacAgent extends Agent
             
                 if ((msg != null) && (!msg.getContent().equals((String) lastMsg))){
                     lastMsg = msg.getContent();
-                    int r = Integer.parseInt(String.valueOf(msg.getContent().charAt(0)))-1;
-                    int c = Integer.parseInt(String.valueOf(msg.getContent().charAt(1)))-1;
+                    int r = Integer.parseInt(String.valueOf(msg.getContent().charAt(0)));
+                    int c = Integer.parseInt(String.valueOf(msg.getContent().charAt(2)));
                     board[r][c] = 0;
                     javax.swing.JButton btn = tacGui.getButton(r*8+c);
                     btn.setBackground(Color.blue);
@@ -107,12 +107,14 @@ public class TacAgent extends Agent
     
     void updateBoard(String bt){
         setTurn(false);
-        row = Integer.parseInt(String.valueOf(bt.charAt(1)))-1;
-        column = Integer.parseInt(String.valueOf(bt.charAt(2)))-1;
-        board[row][column] = 1;
+//        row = Integer.parseInt(String.valueOf(bt.charAt(1)))-1;
+//        column = Integer.parseInt(String.valueOf(bt.charAt(2)))-1;
+        int LL = Integer.parseInt(bt);
+        row = LL / 8;
+        column = LL % 8;
         // kirim berita ke tic
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-	msg.setContent(""+bt.charAt(1)+bt.charAt(2));
+	msg.setContent(""+row+" "+column);
      	msg.addReceiver( new AID( "tic", AID.ISLOCALNAME) );
         System.out.println("Tac -> Tic: " + msg.getContent());
 	send(msg);

@@ -59,7 +59,7 @@ public class TicGUIImplementation extends javax.swing.JFrame implements TicAgent
             
             for (Component col : row.getComponents()) {
                 JButton btn = (JButton) col;
-                btn.setName("Btn"+(i*8+j));
+                btn.setName("Btn_"+(i*8+j));
                 btn.addActionListener(btnListener);
                 mapLLToButton.put((i*8+j), btn);
 //                System.out.println(i*8+j);
@@ -1405,7 +1405,10 @@ public class TicGUIImplementation extends javax.swing.JFrame implements TicAgent
         if (btn.isEnabled() && myAgent.isTurn()) {
             btn.setBackground(Color.green);
             deactivateButton();
-            myAgent.updateBoard(btn.getName());
+                      
+            String btnLL = btn.getName().substring(btn.getName().indexOf("_")+1);
+            System.out.println(btnLL);
+            myAgent.updateBoard(btnLL);
             notifyUser(btn.getName()+" is pressed.");
         }         
     }

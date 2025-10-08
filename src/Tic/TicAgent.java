@@ -89,8 +89,8 @@ public class TicAgent extends Agent {
             if (step == 1 && !isTurn()) {
                 msg = receive();
                 if ((msg != null) && (!msg.getContent().equals((String) lastMsg))){
-                    int r = Integer.parseInt(String.valueOf(msg.getContent().charAt(0)))-1;
-                    int c = Integer.parseInt(String.valueOf(msg.getContent().charAt(1)))-1;
+                    int r = Integer.parseInt(String.valueOf(msg.getContent().charAt(0)));
+                    int c = Integer.parseInt(String.valueOf(msg.getContent().charAt(2)));
                     board[r][c] = 0;
                     javax.swing.JButton btn = ticGui.getButton(r*8+c);
                     btn.setBackground(Color.green);
@@ -115,12 +115,15 @@ public class TicAgent extends Agent {
     // method ini dipanggil setiap kali ada tombol yang ditekan oleh pemain
     void updateBoard(String bt){
         setTurn(false);
-        row = Integer.parseInt(String.valueOf(bt.charAt(3)))-1;
-        column = Integer.parseInt(String.valueOf(bt.charAt(4)))-1;
+//        row = Integer.parseInt(String.valueOf(bt.charAt(3)))-1;
+//        column = Integer.parseInt(String.valueOf(bt.charAt(4)))-1;
+        int LL = Integer.parseInt(bt);
+        row = LL / 8;
+        column = LL % 8;
         board[row][column] = 1;
         // kirim berita ke tac
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-	msg.setContent(""+bt.charAt(3)+bt.charAt(4));
+	msg.setContent(""+row+" "+column);
      	msg.addReceiver( new AID( "tac", AID.ISLOCALNAME) );
         System.out.println("Tic -> Tac: " + msg.getContent());
 //        System.out.println("pesan "+ msg.toString());
