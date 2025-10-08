@@ -20,7 +20,8 @@ public class TacAgent extends Agent {
     int step = 0;
     int row, column;
     String lastMsg = "";
-
+    
+    
     protected void setup() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -91,12 +92,19 @@ public class TacAgent extends Agent {
                     lastMsg = msg.getContent();
                     int r = Integer.parseInt(String.valueOf(msg.getContent().charAt(0)));
                     int c = Integer.parseInt(String.valueOf(msg.getContent().charAt(2)));
+                    
                     board[r][c] = 1;
+                    
                     flipDisc(r, c, 1);
+                    
                     javax.swing.JButton btn = tacGui.getButton(r * 8 + c);
+                    
                     btn.setBackground(Color.blue);
+                    
                     updateGUI();
+                    
                     tacGui.activateButton();
+                    
                     setTurn(true);
                 }
             }
@@ -184,6 +192,7 @@ public class TacAgent extends Agent {
     }
 
     void flipDisc(int row, int col, int player) {
+
         int opponent = (player == 1) ? 0 : 1;
         for (int dr = -1; dr <= 1; dr++) {
             for (int dc = -1; dc <= 1; dc++) {
@@ -203,9 +212,13 @@ public class TacAgent extends Agent {
                 if (r >= 0 && r < 8 && c >= 0 && c < 8 && board[r][c] == player) {
                     for (int[] coordinate : toFlip) {
                         board[coordinate[0]][coordinate[1]] = player;
+       
                     }
                 }
+                
             }
         }
+        
+
     }
 }//end class TacAgent

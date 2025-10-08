@@ -1433,7 +1433,11 @@ public class TacGUIImplementation extends javax.swing.JFrame implements TacAgent
     public void deactivateButton(){
         for (int i=0; i<8; i++) {
             for (int j=0; j<8;j++) {
-                getButton(i*8+j).setEnabled(false);
+                JButton btn = getButton(i*8+j);
+                btn.setEnabled(false);
+                if (btn.getBackground() == Color.lightGray) {
+                    btn.setBackground(null);
+                }
             }
         }
     }
