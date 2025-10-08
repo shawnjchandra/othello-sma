@@ -26,11 +26,17 @@ public class TacAgent extends Agent
             }
         }
         
+        // Init based board
+        board[3][3] = 1;
+        board[4][4] = 1;
+        board[3][4] = 0;
+        board[4][3] = 0;
+        
         // Printout a welcome message   
         System.out.println("Tac-agent "+getAID().getName()+" is ready.");   
 
         // Show the GUI to interact with the user   
-        tacGui = new TacAgentGUIImpl();   
+        tacGui = new TacGUIImplementation();   
         tacGui.setAgent(this);   
         tacGui.show();   
 
@@ -82,7 +88,7 @@ public class TacAgent extends Agent
                     int r = Integer.parseInt(String.valueOf(msg.getContent().charAt(0)))-1;
                     int c = Integer.parseInt(String.valueOf(msg.getContent().charAt(1)))-1;
                     board[r][c] = 0;
-                    javax.swing.JButton btn = tacGui.getButton(r*3+c);
+                    javax.swing.JButton btn = tacGui.getButton(r*8+c);
                     btn.setBackground(Color.blue);
                     tacGui.activateButton();
                     setTurn(true);

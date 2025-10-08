@@ -3,12 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Tic;
+package Tac ;
 
+import Tac.*;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JButton;
@@ -18,8 +20,8 @@ import javax.swing.JPanel;
  *
  * @author USER
  */
-public class TicGUIImplementation extends javax.swing.JFrame implements TicAgentGUI {
-    private TicAgent myAgent;
+public class TacGUIImplementation extends javax.swing.JFrame implements TacAgentGUI {
+    private TacAgent myAgent;
     /**
      * Creates new form TicGUIImplementation
      */
@@ -27,7 +29,7 @@ public class TicGUIImplementation extends javax.swing.JFrame implements TicAgent
     Map<Integer, JButton> mapLLToButton = new HashMap<>();
     
     
-    public TicGUIImplementation() {
+    public TacGUIImplementation() {
         initComponents();
  
         JPanel[] rows = {
@@ -55,24 +57,18 @@ public class TicGUIImplementation extends javax.swing.JFrame implements TicAgent
     
             int j = 0;
             row.setName("row" + (i+1)); // Set row names too if you want
-//            System.out.println("==========="+row.getName());
             
             for (Component col : row.getComponents()) {
                 JButton btn = (JButton) col;
                 btn.setName("Btn"+(i*8+j));
                 btn.addActionListener(btnListener);
                 mapLLToButton.put((i*8+j), btn);
-//                System.out.println(i*8+j);
-//                System.out.println("Tic: "+(i*8+j) + " "+ i +" "+j +" "+ btn.getName());
+//                System.out.println("Tac: "+(i*8+j) + " "+ i +" "+j +" "+ btn.getName());
 
-                
                 j++;
             }
-            
             i++;
         }
-        
-        
     }
 
     /**
@@ -1403,7 +1399,7 @@ public class TicGUIImplementation extends javax.swing.JFrame implements TicAgent
     
     void BtnActionPerformed(javax.swing.JButton btn) {
         if (btn.isEnabled() && myAgent.isTurn()) {
-            btn.setBackground(Color.green);
+            btn.setBackground(Color.blue);
             deactivateButton();
             myAgent.updateBoard(btn.getName());
             notifyUser(btn.getName()+" is pressed.");
@@ -1434,7 +1430,7 @@ public class TicGUIImplementation extends javax.swing.JFrame implements TicAgent
         return b;
     }    
     
-    public void setAgent(TicAgent a) {   
+    public void setAgent(TacAgent a) {   
         myAgent = a;   
         setTitle(myAgent.getName());   
     }   
@@ -1461,20 +1457,21 @@ public class TicGUIImplementation extends javax.swing.JFrame implements TicAgent
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TicGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TacGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TicGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TacGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TicGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TacGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TicGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TacGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TicGUIImplementation().setVisible(true);
+                new TacGUIImplementation().setVisible(true);
             }
         });
     }

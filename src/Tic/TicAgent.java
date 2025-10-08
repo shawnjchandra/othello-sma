@@ -24,6 +24,14 @@ public class TicAgent extends Agent {
             }
         }
         
+            // Init based board
+//        board[3][3] = 0;
+//        board[4][4] = 0;
+//        board[3][4] = 1;
+//        board[4][3] = 1;
+        
+        
+        
         System.out.println("Tic-agent "+getAID().getName()+" is ready.");   
 
         // Show the GUI to interact with the user   
@@ -34,6 +42,11 @@ public class TicAgent extends Agent {
         addBehaviour(new invitingBehaviour(this));
         // selanjutnya masuk ke permainan
         addBehaviour(new playingBehaviour(this));
+        
+    }
+
+    protected String getButtonName(int r, int c) {
+        return ticGui.getButton(r*8+c).getName();
     }
     
     // perilaku tic pada saat mengundang tac untuk bermain
@@ -79,7 +92,7 @@ public class TicAgent extends Agent {
                     int r = Integer.parseInt(String.valueOf(msg.getContent().charAt(0)))-1;
                     int c = Integer.parseInt(String.valueOf(msg.getContent().charAt(1)))-1;
                     board[r][c] = 0;
-                    javax.swing.JButton btn = ticGui.getButton(r*3+c);
+                    javax.swing.JButton btn = ticGui.getButton(r*8+c);
                     btn.setBackground(Color.green);
                     ticGui.activateButton();
                     setTurn(true);
