@@ -69,6 +69,11 @@ public class TacGUIImplementation extends javax.swing.JFrame implements TacAgent
             }
             i++;
         }
+        
+        getButton(3*8+3).setBackground(Color.blue);
+        getButton(4*8+4).setBackground(Color.blue);
+        getButton(3*8+4).setBackground(Color.green);
+        getButton(4*8+3).setBackground(Color.green);
     }
 
     /**
@@ -1411,7 +1416,15 @@ public class TacGUIImplementation extends javax.swing.JFrame implements TacAgent
         for (int i=0; i<8; i++) {
             for (int j=0; j<8;j++) {
                 if (myAgent.board[i][j] == -1) {
-                    getButton(i*8+j).setEnabled(true);
+                    if(myAgent.isValidMove(i,j,0)){
+                        getButton(i*8+j).setEnabled(true);
+                        getButton(i*8+j).setBackground(Color.lightGray);
+                    } else {
+                        getButton(i*8+j).setEnabled(false);
+                        getButton(i*8+j).setBackground(null);
+                    }
+                } else {
+                    getButton(i*8+j).setEnabled(false);
                 }
             }
         }

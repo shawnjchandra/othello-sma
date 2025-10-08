@@ -72,6 +72,11 @@ public class TicGUIImplementation extends javax.swing.JFrame implements TicAgent
             i++;
         }
         
+        getButton(3*8+3).setBackground(Color.green);
+        getButton(4*8+4).setBackground(Color.green);
+        getButton(3*8+4).setBackground(Color.blue);
+        getButton(4*8+3).setBackground(Color.blue);
+        
         
     }
 
@@ -1414,14 +1419,25 @@ public class TicGUIImplementation extends javax.swing.JFrame implements TicAgent
     }
     
     public void activateButton(){
-        for (int i=0; i<8; i++) {
-            for (int j=0; j<8;j++) {
-                if (myAgent.board[i][j] == -1) {
-                    getButton(i*8+j).setEnabled(true);
-                }
+    // Iterasi seluruh papan dan tandai tombol yang merupakan gerakan valid
+    for (int i=0; i<8; i++) {
+        for (int j=0; j<8;j++) {
+            if (myAgent.board[i][j] == -1) {
+                 // Cek apakah ini gerakan yang valid untuk pemain saat ini
+                 if (myAgent.isValidMove(i, j, 1)) { // 1 untuk TicAgent
+                     getButton(i*8+j).setEnabled(true);
+                     // Mungkin beri warna khusus untuk menandakan gerakan valid
+                     getButton(i*8+j).setBackground(Color.lightGray);
+                 } else {
+                     getButton(i*8+j).setEnabled(false);
+                     getButton(i*8+j).setBackground(null); // Warna default
+                 }
+            } else {
+                getButton(i*8+j).setEnabled(false); // Tombol yang sudah terisi
             }
         }
     }
+}
     
     public void deactivateButton(){
         for (int i=0; i<8; i++) {
