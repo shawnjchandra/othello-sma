@@ -53,7 +53,7 @@ public class TicAgent extends Agent {
     // perilaku tic pada saat mengundang tac untuk bermain
     class invitingBehaviour extends CyclicBehaviour {
         String lastMsg = "";
-	ACLMessage msg= receive();
+	    ACLMessage msg= receive();
 
         public invitingBehaviour (Agent a) {
             super(a);
@@ -80,7 +80,7 @@ public class TicAgent extends Agent {
     // perilaku tic pada saat bermain
     class playingBehaviour extends CyclicBehaviour {
         String lastMsg = "";
-	ACLMessage msg= receive();
+	    ACLMessage msg= receive();
 
         public playingBehaviour (Agent a) {
             super(a);
@@ -95,10 +95,14 @@ public class TicAgent extends Agent {
                     int r = Integer.parseInt(String.valueOf(msg.getContent().charAt(0)));
                     int c = Integer.parseInt(String.valueOf(msg.getContent().charAt(2)));
                     board[r][c] = 0;
-                    flipDisc(r, c, 0);
+
                     javax.swing.JButton btn = ticGui.getButton(r * 8 + c);
                     btn.setBackground(Color.blue);
+                    
+                    flipDisc(r, c, 0);
                     updateGUI();
+                    checkGameEnd();
+                    
                     ticGui.activateButton();
                     setTurn(true);
                 }
@@ -213,6 +217,82 @@ public class TicAgent extends Agent {
                     }
                 }
             }
+        }
+    }
+
+    int countTicPieces() {
+        int currPieceCount = 0;
+        for (int i = 0;i < 8;++i) {
+            for (int j = 0;j < 8;++j) {
+                if (board[i][j] == 1) {
+                    ++currPieceCount;
+                }
+            }
+        }
+
+        return currPieceCount;
+    }
+
+    int countTacPieces() {
+        int currPieceCount = 0;
+        for (int i = 0;i < 8;++i) {
+            for (int j = 0;j < 8;++j) {
+                if (board[i][j] == 0) {
+                    ++currPieceCount;
+                }
+            }
+        }
+
+        return currPieceCount;
+    }
+
+    boolean hasValidMove(int player) {
+        for (int i = 0;i < 8;++i) {
+            for (int j = 0;j < 8;++j) {
+                if (isValidMove(i, j, player)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    boolean isBoardFull() {
+        for (int i = 0;i < 8;++i) {
+            for (int j = 0;j < 8;++j) {
+                if (board[i][j] == -1) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    void checkGameEnd() {
+        boolean tacCanMove = hasValidMove(0);
+        boolean ticCanMove = hasValidMove(1);
+        boolean boardFull = isBoardFull();
+
+        if ((!tacCanMove && !ticCanMove) || boardFull) {
+            int tacPieces = countTacPieces();
+            int ticPieces = countTicPieces();
+
+            System.out.println("=== GAME OVER ===");
+            System.out.println("Tac pieces = " + tacPieces);
+            System.out.println("Tic pieces = " + ticPieces);
+
+            if (tacPieces > ticPieces) {
+                System.out.println("Tac Wins!");
+            } else if (ticPieces > tacPieces) {
+                System.out.println("Tic Wins!");
+            } else {
+                System.out.println("Draw!");
+            }
+
+            ticGui.dispose();
+            step = 2;
         }
     }
     

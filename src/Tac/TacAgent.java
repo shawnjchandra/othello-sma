@@ -20,6 +20,7 @@ public class TacAgent extends Agent {
     int step = 0;
     int row, column;
     String lastMsg = "";
+    int pieceCount = 0;
     
     
     protected void setup() {
@@ -30,11 +31,12 @@ public class TacAgent extends Agent {
         }
 
         // Init based board
-        board[3][3] = 1;
+        board[3][3] = 1;    // ijo, dan tic ijo
         board[4][4] = 1;
         board[3][4] = 0;
         board[4][3] = 0;
 
+        //this.setPieceCount(countTacPieces());
         // Printout a welcome message   
         System.out.println("Tac-agent " + getAID().getName() + " is ready.");
 
@@ -50,7 +52,7 @@ public class TacAgent extends Agent {
     }
 
     // perilaku tac pada saat menunggu tawaran bermain dari tic
-    class waitingBehaviour extends CyclicBehaviour {
+    private class waitingBehaviour extends CyclicBehaviour {
 
         ACLMessage msg = receive();
 
@@ -76,8 +78,7 @@ public class TacAgent extends Agent {
     }
 
     // perilaku tac pada saat bermain
-    class playingBehaviour extends CyclicBehaviour {
-
+    private class playingBehaviour extends CyclicBehaviour {
         ACLMessage msg = receive();
 
         public playingBehaviour(Agent a) {
@@ -95,16 +96,16 @@ public class TacAgent extends Agent {
                     
                     board[r][c] = 1;
                     
-                    flipDisc(r, c, 1);
-                    
                     javax.swing.JButton btn = tacGui.getButton(r * 8 + c);
                     
                     btn.setBackground(Color.blue);
                     
+                    flipDisc(r, c, 1);
                     updateGUI();
                     
+                    checkGameEnd();
+
                     tacGui.activateButton();
-                    
                     setTurn(true);
                 }
             }
@@ -117,6 +118,10 @@ public class TacAgent extends Agent {
 
     void setTurn(boolean b) {
         turn = b;
+    }
+
+    void setPieceCount(int pieceCount) {
+        this.pieceCount = pieceCount;
     }
 
     void updateBoard(String bt) {
@@ -150,7 +155,6 @@ public class TacAgent extends Agent {
                     tacGui.getButton(i * 8 + j).setBackground(Color.green);
                 } else if (board[i][j] == 0) {
                     tacGui.getButton(i * 8 + j).setBackground(Color.blue);
-
                 }
             }
         }
@@ -192,7 +196,6 @@ public class TacAgent extends Agent {
     }
 
     void flipDisc(int row, int col, int player) {
-
         int opponent = (player == 1) ? 0 : 1;
         for (int dr = -1; dr <= 1; dr++) {
             for (int dc = -1; dc <= 1; dc++) {
@@ -218,7 +221,82 @@ public class TacAgent extends Agent {
                 
             }
         }
-        
+    }
 
+    int countTacPieces() {
+        int currPieceCount = 0;
+        for (int i = 0;i < 8;++i) {
+            for (int j = 0;j < 8;++j) {
+                if (board[i][j] == 0) {
+                    ++currPieceCount;
+                }
+            }
+        }
+
+        return currPieceCount;
+    }
+
+    int countTicPieces() {
+        int currPieceCount = 0;
+        for (int i = 0;i < 8;++i) {
+            for (int j = 0;j < 8;++j) {
+                if (board[i][j] == 1) {
+                    ++currPieceCount;
+                }
+            }
+        }
+
+        return currPieceCount;
+    }
+
+    boolean hasValidMove(int player) {
+        for (int i = 0;i < 8;++i) {
+            for (int j = 0;j < 8;++j) {
+                if (isValidMove(i, j, player)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    boolean isBoardFull() {
+        for (int i = 0;i < 8;++i) {
+            for (int j = 0;j < 8;++j) {
+                if (board[i][j] == -1) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    void checkGameEnd() {
+        boolean tacCanMove = hasValidMove(0);
+        boolean ticCanMove = hasValidMove(1);
+        boolean boardFull = isBoardFull();
+
+        if ((!tacCanMove && !ticCanMove) || boardFull) {
+            int tacPieces = countTacPieces();
+            int ticPieces = countTicPieces();
+
+            System.out.println("=== GAME OVER ===");
+            System.out.println("Tac pieces = " + tacPieces);
+            System.out.println("Tic pieces = " + ticPieces);
+
+            if (tacPieces > ticPieces) {
+                System.out.println("Tac Wins!");
+            } else if (ticPieces > tacPieces) {
+                System.out.println("Tic Wins!");
+            } else {
+                System.out.println("Draw!");
+            }
+
+            tacGui.dispose();
+
+            step = 2;
+        }
     }
 }//end class TacAgent

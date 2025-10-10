@@ -1,0 +1,39 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+                "type": "java",
+                "name": "Launch JADE",
+                "request": "launch",
+                "mainClass": "jade.Boot", 
+                "projectName": "othello-sma",
+                "vmArgs": "-cp \"C:\\Users\\MyLaptop\\Documents\\jade\\JADE-bin-4.6.0\\jade\\lib\\jade.jar\"", // Adjust classpath as needed
+                "args": "-gui -agents \"tic:Tic.TicAgent;tac:Tac.TacAgent\"" // JADE arguments
+        },
+
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "TacGUIImplementation",
+            "request": "launch",
+            "mainClass": "Tac.TacGUIImplementation",
+            "projectName": "othello-sma_7f2ea53c"
+        },
+        {
+            "type": "java",
+            "name": "TicGUIImplementation",
+            "request": "launch",
+            "mainClass": "Tic.TicGUIImplementation",
+            "projectName": "othello-sma_7f2ea53c"
+        }
+    ]
+}
