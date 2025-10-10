@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Tic;
+package PlayerTwo;
 
 /**
  *
  * @author USER
  */
-public interface TicAgentGUI {
-  void setAgent(TicAgent a);   
+public interface PlayerTwoAgentGUI {
+  void setAgent(PlayerTwoAgent a);   
   void show();   
   void hide();   
   void notifyUser(String message);   

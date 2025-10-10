@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Tac;
+package PlayerOne;
 
 import jade.core.AID;
 import jade.core.Agent;
@@ -12,11 +12,11 @@ import jade.lang.acl.ACLMessage;
 import java.awt.Color;
 import java.util.ArrayList;
 
-public class TacAgent extends Agent {
+public class PlayerOneAgent extends Agent {
 
-    private TacAgentGUI tacGui;
+    private PlayerOneAgentGUI playerOneGui;
     public int[][] board = new int[8][8];
-    boolean turn = false; // turn
+    boolean turn = true; // turn
     int step = 0;
     int row, column;
     String lastMsg = "";
@@ -31,47 +31,48 @@ public class TacAgent extends Agent {
         }
 
         // Init based board
-        board[3][3] = 1;    // ijo, dan tic ijo
+        board[3][3] = 1;   // Player One Hijau
         board[4][4] = 1;
-        board[3][4] = 0;
+        board[3][4] = 0;    // Player Two Biru
         board[4][3] = 0;
 
-        //this.setPieceCount(countTacPieces());
         // Printout a welcome message   
-        System.out.println("Tac-agent " + getAID().getName() + " is ready.");
+        System.out.println("PlayerOne-agent " + getAID().getName() + " is ready.");
 
         // Show the GUI to interact with the user   
-        tacGui = new TacGUIImplementation();
-        tacGui.setAgent(this);
-        tacGui.show();
+        playerOneGui = new PlayerOneGUIImplementation();
+        playerOneGui.setAgent(this);
+        playerOneGui.show();
 
-        // menunggu tawaran bermain dari tic
-        addBehaviour(new waitingBehaviour(this));
+        // mengundang player Two
+        addBehaviour(new invitingBehaviour(this));
         // bermain
         addBehaviour(new playingBehaviour(this));
     }
 
-    // perilaku tac pada saat menunggu tawaran bermain dari tic
-    private class waitingBehaviour extends CyclicBehaviour {
+    // perilaku tac pada saat menunggu tawaran bermain dari PlayerTwo
+    private class invitingBehaviour extends CyclicBehaviour {
 
         ACLMessage msg = receive();
 
-        public waitingBehaviour(Agent a) {
+        public invitingBehaviour(Agent a) {
             super(a);
         }
 
         public void action() {
             if (step == 0) {
-                msg = receive();
-                if (msg != null) {
-                    lastMsg = msg.getContent();
-                    msg = new ACLMessage(ACLMessage.INFORM);
-                    // menjawab tawaran
-                    msg.setContent("Okay!");
-                    msg.addReceiver(new AID("tic", AID.ISLOCALNAME));
-                    System.out.println("Tac -> Tic: " + msg.getContent());
-                    send(msg); // masuk ke tahap bermain
+                
+                ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+                msg.setContent( "Let's play board!" );
+                msg.addReceiver( new AID( "pTwo", AID.ISLOCALNAME) );
+                System.out.println("Player One -> Player Two : "+ msg.getContent());
+                send(msg);
+                block(500);
+                // tunggu beberapa saat
+                msg= receive();
+                if (msg!=null && msg.getContent().contains("Okay")) {
                     step = 1;
+                    playerOneGui.activateButton();
                 }
             }
         }
@@ -88,15 +89,15 @@ public class TacAgent extends Agent {
         public void action() {
             if (step == 1 && !isTurn()) {
                 msg = receive();
-
                 if ((msg != null) && (!msg.getContent().equals((String) lastMsg))) {
                     lastMsg = msg.getContent();
+
                     int r = Integer.parseInt(String.valueOf(msg.getContent().charAt(0)));
                     int c = Integer.parseInt(String.valueOf(msg.getContent().charAt(2)));
                     
                     board[r][c] = 1;
                     
-                    javax.swing.JButton btn = tacGui.getButton(r * 8 + c);
+                    javax.swing.JButton btn = playerOneGui.getButton(r * 8 + c);
                     
                     btn.setBackground(Color.blue);
                     
@@ -105,7 +106,7 @@ public class TacAgent extends Agent {
                     
                     checkGameEnd();
 
-                    tacGui.activateButton();
+                    playerOneGui.activateButton();
                     setTurn(true);
                 }
             }
@@ -129,32 +130,29 @@ public class TacAgent extends Agent {
         row = LL / 8;
         column = LL % 8;
 
-        if (isValidMove(row, column, 0)) { // 1 untuk TicAgent
+        if (isValidMove(row, column, 0)) { // 1 untuk playerOneAgent
             board[row][column] = 0;
             flipDisc(row, column, 0);
             setTurn(false); // Ganti giliran
 
-            // Kirim pesan ke Tac
+            // Kirim pesan ke pTwo
             ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
             msg.setContent("" + row + " " + column);
-            msg.addReceiver(new AID("tic", AID.ISLOCALNAME));
+            msg.addReceiver(new AID("pTwo", AID.ISLOCALNAME));
             send(msg);
 
             // Update GUI setelah flip
             updateGUI();
-        } else {
-            // Mungkin berikan notifikasi gerakan tidak valid
-//            notifyUser("Gerakan tidak valid!");
-        }
+        } 
     }
 
     void updateGUI() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (board[i][j] == 1) {
-                    tacGui.getButton(i * 8 + j).setBackground(Color.green);
+                    playerOneGui.getButton(i * 8 + j).setBackground(Color.green);
                 } else if (board[i][j] == 0) {
-                    tacGui.getButton(i * 8 + j).setBackground(Color.blue);
+                    playerOneGui.getButton(i * 8 + j).setBackground(Color.blue);
                 }
             }
         }
@@ -215,15 +213,13 @@ public class TacAgent extends Agent {
                 if (r >= 0 && r < 8 && c >= 0 && c < 8 && board[r][c] == player) {
                     for (int[] coordinate : toFlip) {
                         board[coordinate[0]][coordinate[1]] = player;
-       
                     }
                 }
-                
             }
         }
     }
 
-    int countTacPieces() {
+    int countPOnePieces() {
         int currPieceCount = 0;
         for (int i = 0;i < 8;++i) {
             for (int j = 0;j < 8;++j) {
@@ -232,11 +228,10 @@ public class TacAgent extends Agent {
                 }
             }
         }
-
         return currPieceCount;
     }
 
-    int countTicPieces() {
+    int countPTwoPieces() {
         int currPieceCount = 0;
         for (int i = 0;i < 8;++i) {
             for (int j = 0;j < 8;++j) {
@@ -245,7 +240,6 @@ public class TacAgent extends Agent {
                 }
             }
         }
-
         return currPieceCount;
     }
 
@@ -257,7 +251,6 @@ public class TacAgent extends Agent {
                 }
             }
         }
-
         return false;
     }
 
@@ -269,34 +262,53 @@ public class TacAgent extends Agent {
                 }
             }
         }
-
         return true;
     }
 
     void checkGameEnd() {
-        boolean tacCanMove = hasValidMove(0);
-        boolean ticCanMove = hasValidMove(1);
+        boolean pOneCanMove = hasValidMove(0);
+        boolean pTwoCanMove = hasValidMove(1);
         boolean boardFull = isBoardFull();
+        boolean end = false;
+        String announcement = "";
 
-        if ((!tacCanMove && !ticCanMove) || boardFull) {
-            int tacPieces = countTacPieces();
-            int ticPieces = countTicPieces();
-
-            System.out.println("=== GAME OVER ===");
-            System.out.println("Tac pieces = " + tacPieces);
-            System.out.println("Tic pieces = " + ticPieces);
-
-            if (tacPieces > ticPieces) {
-                System.out.println("Tac Wins!");
-            } else if (ticPieces > tacPieces) {
-                System.out.println("Tic Wins!");
-            } else {
-                System.out.println("Draw!");
-            }
-
-            tacGui.dispose();
-
+        if (!pOneCanMove || !pTwoCanMove) {
+            end = true;
+            announcement = getAnnouncement(false); 
+        }
+        if (boardFull) {
+            end = true;
+            announcement = getAnnouncement(true); 
+        }
+        
+        if(end){
+            System.out.println(announcement);
+            updateGUI();
             step = 2;
         }
     }
-}//end class TacAgent
+    
+    String getAnnouncement (boolean full) {
+        String announcement = "";
+        int pOnePieces = countPOnePieces();
+        int pTwoPieces = countPTwoPieces();
+        
+        if (full) {
+            announcement += "=== GAME OVER ===\n";
+        } else {
+            announcement += "=== NO MORE MOVES!! ===\n";
+        }
+        
+        announcement +=("PlayerOne pieces = " + pOnePieces+"\n");
+        announcement +=("PlayerTwo pieces = " + pTwoPieces+"\n");
+        if (pOnePieces > pTwoPieces) {
+            announcement +=("PlayerOne Wins!\n");
+        } else if (pTwoPieces > pOnePieces) {
+            announcement +=("PlayerTwo Wins!\n");
+        } else {
+            announcement +=("Draw!\n");
+        }
+        
+        return announcement;
+    }
+}//end class PlayerOne

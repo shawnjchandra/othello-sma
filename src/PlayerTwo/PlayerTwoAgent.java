@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Tic;
+package PlayerTwo;
 
 import jade.core.AID;
 import jade.core.Agent;
@@ -11,12 +11,14 @@ import jade.core.behaviours.*;
 import jade.lang.acl.ACLMessage;  
 import java.awt.Color;
 import java.util.ArrayList;
-public class TicAgent extends Agent {
-    private TicAgentGUI ticGui; 
+public class PlayerTwoAgent extends Agent {
+    private PlayerTwoAgentGUI PlayerTwoGui; 
     public int [][] board = new int[8][8]; 
-    boolean turn = true; // turn
+    boolean turn = false; // turn
     int step = 0;
     int row, column;
+    String lastMsg = "";
+
    
     protected void setup(){
         for (int i=0; i < 8 ; i++) {
@@ -25,61 +27,59 @@ public class TicAgent extends Agent {
             }
         }
         
-            // Init based board
+        // Init based board
         board[3][3] = 1;
         board[4][4] = 1;
         board[3][4] = 0;
         board[4][3] = 0;
         
-        
-        
-        System.out.println("Tic-agent "+getAID().getName()+" is ready.");   
+        System.out.println("PlayerTwo-agent "+getAID().getName()+" is ready.");   
 
         // Show the GUI to interact with the user   
-        ticGui = new TicGUIImplementation();   
-        ticGui.setAgent(this);   
-        ticGui.show();  
-        // mengundang tac untuk bermain
-        addBehaviour(new invitingBehaviour(this));
+        PlayerTwoGui = new PlayerTwoGUIImplementation();   
+        PlayerTwoGui.setAgent(this);   
+        PlayerTwoGui.show();  
+        
+        // menunggu tawaran dari player One
+        addBehaviour(new waitingBehaviour(this));
         // selanjutnya masuk ke permainan
         addBehaviour(new playingBehaviour(this));
-        
     }
 
     protected String getButtonName(int r, int c) {
-        return ticGui.getButton(r*8+c).getName();
+        return PlayerTwoGui.getButton(r*8+c).getName();
     }
     
-    // perilaku tic pada saat mengundang tac untuk bermain
-    class invitingBehaviour extends CyclicBehaviour {
-        String lastMsg = "";
-	    ACLMessage msg= receive();
+    // perilaku PlayerTwo pada saat mengundang PlayerOne untuk bermain
+    class waitingBehaviour extends CyclicBehaviour {
+        ACLMessage msg= receive();
 
-        public invitingBehaviour (Agent a) {
+        public waitingBehaviour (Agent a) {
             super(a);
         }
         
-        public void action(){
+        public void action(){   
             if (step == 0) {
-                ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-                msg.setContent( "Let's play board!" );
-                msg.addReceiver( new AID( "tac", AID.ISLOCALNAME) );
-                System.out.println("tic -> tac: "+ msg.getContent());
-                send(msg);
-                block(500);
-                // tunggu beberapa saat
-                msg= receive();
-                if (msg!=null && msg.getContent().contains("Okay")) {
-                    step = 1;
-                    ticGui.activateButton();
+                    msg = receive();
+
+                    if (msg != null) {
+                        lastMsg = msg.getContent();
+
+                        msg = new ACLMessage(ACLMessage.INFORM);
+                        
+                        // menjawab tawaran
+                        msg.setContent("Okay!");
+                        msg.addReceiver(new AID("pOne", AID.ISLOCALNAME));
+                        System.out.println("Player pTwo -> Player pOne : " + msg.getContent());
+                        send(msg); // masuk ke tahap bermain
+                        step = 1;
+                    }
                 }
-            }           
-        }
+            }
     }
     
-    // perilaku tic pada saat bermain
+    // perilaku PlayerTwo pada saat bermain
     class playingBehaviour extends CyclicBehaviour {
-        String lastMsg = "";
 	    ACLMessage msg= receive();
 
         public playingBehaviour (Agent a) {
@@ -92,18 +92,19 @@ public class TicAgent extends Agent {
 
                 if ((msg != null) && (!msg.getContent().equals((String) lastMsg))) {
                     lastMsg = msg.getContent();
+
                     int r = Integer.parseInt(String.valueOf(msg.getContent().charAt(0)));
                     int c = Integer.parseInt(String.valueOf(msg.getContent().charAt(2)));
                     board[r][c] = 0;
 
-                    javax.swing.JButton btn = ticGui.getButton(r * 8 + c);
+                    javax.swing.JButton btn = PlayerTwoGui.getButton(r * 8 + c);
                     btn.setBackground(Color.blue);
                     
                     flipDisc(r, c, 0);
                     updateGUI();
                     checkGameEnd();
                     
-                    ticGui.activateButton();
+                    PlayerTwoGui.activateButton();
                     setTurn(true);
                 }
             }
@@ -127,22 +128,19 @@ public class TicAgent extends Agent {
         row = LL / 8;
         column = LL % 8;
 
-        if (isValidMove(row, column, 1)) { // 1 untuk TicAgent
+        if (isValidMove(row, column, 1)) { // 1 untuk PlayerTwoAgent
             board[row][column] = 1;
             flipDisc(row, column, 1);
             setTurn(false); // Ganti giliran
 
-            // Kirim pesan ke Tac
+            // Kirim pesan ke pOne
             ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
             msg.setContent("" + row + " " + column);
-            msg.addReceiver(new AID("tac", AID.ISLOCALNAME));
+            msg.addReceiver(new AID("pOne", AID.ISLOCALNAME));
             send(msg);
 
             // Update GUI setelah flip
             updateGUI();
-        } else {
-            // Mungkin berikan notifikasi gerakan tidak valid
-//            notifyUser("Gerakan tidak valid!");
         }
     }
     
@@ -150,9 +148,9 @@ public class TicAgent extends Agent {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (board[i][j] == 1) {
-                    ticGui.getButton(i * 8 + j).setBackground(Color.green);
+                    PlayerTwoGui.getButton(i * 8 + j).setBackground(Color.green);
                 } else if (board[i][j] == 0) {
-                    ticGui.getButton(i * 8 + j).setBackground(Color.blue);
+                    PlayerTwoGui.getButton(i * 8 + j).setBackground(Color.blue);
 
                 }
             }
@@ -220,7 +218,7 @@ public class TicAgent extends Agent {
         }
     }
 
-    int countTicPieces() {
+    int countPTwoPieces() {
         int currPieceCount = 0;
         for (int i = 0;i < 8;++i) {
             for (int j = 0;j < 8;++j) {
@@ -229,11 +227,10 @@ public class TicAgent extends Agent {
                 }
             }
         }
-
         return currPieceCount;
     }
 
-    int countTacPieces() {
+    int countPOnePieces() {
         int currPieceCount = 0;
         for (int i = 0;i < 8;++i) {
             for (int j = 0;j < 8;++j) {
@@ -242,7 +239,6 @@ public class TicAgent extends Agent {
                 }
             }
         }
-
         return currPieceCount;
     }
 
@@ -254,7 +250,6 @@ public class TicAgent extends Agent {
                 }
             }
         }
-
         return false;
     }
 
@@ -266,34 +261,55 @@ public class TicAgent extends Agent {
                 }
             }
         }
-
         return true;
     }
 
     void checkGameEnd() {
-        boolean tacCanMove = hasValidMove(0);
-        boolean ticCanMove = hasValidMove(1);
+        boolean pOneCanMove = hasValidMove(0);
+        boolean pTwoCanMove = hasValidMove(1);
         boolean boardFull = isBoardFull();
+        boolean end = false;
+        String announcement = "";
 
-        if ((!tacCanMove && !ticCanMove) || boardFull) {
-            int tacPieces = countTacPieces();
-            int ticPieces = countTicPieces();
-
-            System.out.println("=== GAME OVER ===");
-            System.out.println("Tac pieces = " + tacPieces);
-            System.out.println("Tic pieces = " + ticPieces);
-
-            if (tacPieces > ticPieces) {
-                System.out.println("Tac Wins!");
-            } else if (ticPieces > tacPieces) {
-                System.out.println("Tic Wins!");
-            } else {
-                System.out.println("Draw!");
-            }
-
-            ticGui.dispose();
+        if (!pOneCanMove && !pTwoCanMove) {
+            end = true;
+            announcement = getAnnouncement(false); 
+        }
+        if (boardFull) {
+            end = true;
+            announcement = getAnnouncement(true); 
+        }
+        
+        
+        if(end){
+            System.out.println(announcement);
+            updateGUI();
             step = 2;
         }
     }
     
-}//end class TicAgent
+    String getAnnouncement (boolean full) {
+        String announcement = "";
+        int pOnePieces = countPOnePieces();
+        int pTwoPieces = countPTwoPieces();
+        
+        if (full) {
+            announcement += "=== GAME OVER ===\n";
+        } else {
+            announcement += "=== NO MORE MOVES!! ===\n";
+        }
+        
+        announcement +=("PlayerOne pieces = " + pOnePieces+"\n");
+        announcement +=("PlayerTwo pieces = " + pTwoPieces+"\n");
+        if (pOnePieces > pTwoPieces) {
+            announcement +=("PlayerOne Wins!\n");
+        } else if (pTwoPieces > pOnePieces) {
+            announcement +=("PlayerTwo Wins!\n");
+        } else {
+            announcement +=("Draw!\n");
+        }
+        
+        return announcement;
+    }
+    
+}//end class PlayerTwoAgent

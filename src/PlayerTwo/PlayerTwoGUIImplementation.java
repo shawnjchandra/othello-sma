@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Tic;
+package PlayerTwo;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -18,16 +18,16 @@ import javax.swing.JPanel;
  *
  * @author USER
  */
-public class TicGUIImplementation extends javax.swing.JFrame implements TicAgentGUI {
-    private TicAgent myAgent;
+public class PlayerTwoGUIImplementation extends javax.swing.JFrame implements PlayerTwoAgentGUI {
+    private PlayerTwoAgent myAgent;
     /**
-     * Creates new form TicGUIImplementation
+     * Creates new form PlayerTwoGUIImplementation
      */
     
     Map<Integer, JButton> mapLLToButton = new HashMap<>();
     
     
-    public TicGUIImplementation() {
+    public PlayerTwoGUIImplementation() {
         initComponents();
  
         JPanel[] rows = {
@@ -1414,7 +1414,7 @@ public class TicGUIImplementation extends javax.swing.JFrame implements TicAgent
             String btnLL = btn.getName().substring(btn.getName().indexOf("_")+1);
             System.out.println(btnLL);
             myAgent.updateBoard(btnLL);
-            notifyUser(btn.getName()+" is pressed.");
+//            notifyUser(btn.getName()+" is pressed.");
         }         
     }
     
@@ -1424,7 +1424,7 @@ public class TicGUIImplementation extends javax.swing.JFrame implements TicAgent
         for (int j=0; j<8;j++) {
             if (myAgent.board[i][j] == -1) {
                  // Cek apakah ini gerakan yang valid untuk pemain saat ini
-                 if (myAgent.isValidMove(i, j, 1)) { // 1 untuk TicAgent
+                 if (myAgent.isValidMove(i, j, 1)) { // 1 untuk PlayerTwoAgent
                      getButton(i*8+j).setEnabled(true);
                      // Mungkin beri warna khusus untuk menandakan gerakan valid
                      getButton(i*8+j).setBackground(Color.lightGray);
@@ -1457,7 +1457,7 @@ public class TicGUIImplementation extends javax.swing.JFrame implements TicAgent
         return b;
     }    
     
-    public void setAgent(TicAgent a) {   
+    public void setAgent(PlayerTwoAgent a) {   
         myAgent = a;   
         setTitle(myAgent.getName());   
     }   
@@ -1484,20 +1484,21 @@ public class TicGUIImplementation extends javax.swing.JFrame implements TicAgent
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TicGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PlayerTwoGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TicGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PlayerTwoGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TicGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PlayerTwoGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TicGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PlayerTwoGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TicGUIImplementation().setVisible(true);
+                new PlayerTwoGUIImplementation().setVisible(true);
             }
         });
     }

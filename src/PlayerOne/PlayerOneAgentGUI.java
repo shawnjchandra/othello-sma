@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Tac;
+package PlayerOne;
 
 /**
  *
  * @author USER
  */
-public interface TacAgentGUI {
-  void setAgent(TacAgent a);   
+public interface PlayerOneAgentGUI {
+  void setAgent(PlayerOneAgent a);   
   void show();   
   void hide();   
   void notifyUser(String message);   

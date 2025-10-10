@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Tac ;
+package PlayerOne ;
 
-import Tac.*;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -20,8 +19,8 @@ import javax.swing.JPanel;
  *
  * @author USER
  */
-public class TacGUIImplementation extends javax.swing.JFrame implements TacAgentGUI {
-    private TacAgent myAgent;
+public class PlayerOneGUIImplementation extends javax.swing.JFrame implements PlayerOneAgentGUI {
+    private PlayerOneAgent myAgent;
     /**
      * Creates new form TicGUIImplementation
      */
@@ -29,7 +28,7 @@ public class TacGUIImplementation extends javax.swing.JFrame implements TacAgent
     Map<Integer, JButton> mapLLToButton = new HashMap<>();
     
     
-    public TacGUIImplementation() {
+    public PlayerOneGUIImplementation() {
         initComponents();
  
         JPanel[] rows = {
@@ -1408,7 +1407,7 @@ public class TacGUIImplementation extends javax.swing.JFrame implements TacAgent
             deactivateButton();
             String btnLL = btn.getName().substring(btn.getName().indexOf("_")+1);
             myAgent.updateBoard(btnLL);
-            notifyUser(btn.getName()+" is pressed.");
+//            notifyUser(btn.getName()+" is pressed.");
         }         
     }
     
@@ -1448,7 +1447,7 @@ public class TacGUIImplementation extends javax.swing.JFrame implements TacAgent
         return b;
     }    
     
-    public void setAgent(TacAgent a) {   
+    public void setAgent(PlayerOneAgent a) {   
         myAgent = a;   
         setTitle(myAgent.getName());   
     }   
@@ -1475,21 +1474,23 @@ public class TacGUIImplementation extends javax.swing.JFrame implements TacAgent
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TacGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PlayerOneGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TacGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PlayerOneGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TacGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PlayerOneGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TacGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PlayerOneGUIImplementation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TacGUIImplementation().setVisible(true);
+                new PlayerOneGUIImplementation().setVisible(true);
             }
         });
     }
