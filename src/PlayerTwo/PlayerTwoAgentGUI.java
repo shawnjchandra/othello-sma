@@ -3,18 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Tac;
+package PlayerTwo;
 
 /**
  *
  * @author USER
  */
-public interface TacAgentGUI {
-  void setAgent(TacAgent a);   
+public interface PlayerTwoAgentGUI {
+  void setAgent(PlayerTwoAgent a);   
   void show();   
   void hide();   
   void notifyUser(String message);   
-  void dispose();
+  void dispose();    
   void activateButton();
-  javax.swing.JButton getButton(int btn);
+  javax.swing.JButton getButton(int b);
 }

@@ -1,0 +1,7 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "c:\\Users\\MyLaptop\\Documents\\jade\\JADE-bin-4.6.0\\jade\\lib\\jade.jar",
+        "c:\\Users\\MyLaptop\\Documents\\jade\\JADE-bin-4.6.0\\jade\\lib\\jadeExamples.jar"
+    ]
+}
