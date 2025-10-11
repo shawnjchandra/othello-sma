@@ -55,17 +55,12 @@ public class PlayerTwoGUIImplementation extends javax.swing.JFrame implements Pl
     
             int j = 0;
             row.setName("row" + (i+1)); // Set row names too if you want
-//            System.out.println("==========="+row.getName());
             
             for (Component col : row.getComponents()) {
                 JButton btn = (JButton) col;
                 btn.setName("Btn_"+(i*8+j));
                 btn.addActionListener(btnListener);
                 mapLLToButton.put((i*8+j), btn);
-//                System.out.println(i*8+j);
-//                System.out.println("Tic: "+(i*8+j) + " "+ i +" "+j +" "+ btn.getName());
-
-                
                 j++;
             }
             
@@ -1412,9 +1407,7 @@ public class PlayerTwoGUIImplementation extends javax.swing.JFrame implements Pl
             deactivateButton();
                       
             String btnLL = btn.getName().substring(btn.getName().indexOf("_")+1);
-            System.out.println(btnLL);
             myAgent.updateBoard(btnLL);
-//            notifyUser(btn.getName()+" is pressed.");
         }         
     }
     
@@ -1463,8 +1456,7 @@ public class PlayerTwoGUIImplementation extends javax.swing.JFrame implements Pl
     }   
     
     public void notifyUser(String message) {  
-        System.out.println("Tic : "+message);
-        //logTA.append(message+"\n");   
+        System.out.println("PlayerTwo : "+message);
     } 
     
      /**

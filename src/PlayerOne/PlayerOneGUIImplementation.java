@@ -62,8 +62,6 @@ public class PlayerOneGUIImplementation extends javax.swing.JFrame implements Pl
                 btn.setName("Btn_"+(i*8+j));
                 btn.addActionListener(btnListener);
                 mapLLToButton.put((i*8+j), btn);
-//                System.out.println("Tac: "+(i*8+j) + " "+ i +" "+j +" "+ btn.getName());
-
                 j++;
             }
             i++;
@@ -1407,7 +1405,6 @@ public class PlayerOneGUIImplementation extends javax.swing.JFrame implements Pl
             deactivateButton();
             String btnLL = btn.getName().substring(btn.getName().indexOf("_")+1);
             myAgent.updateBoard(btnLL);
-//            notifyUser(btn.getName()+" is pressed.");
         }         
     }
     
@@ -1453,7 +1450,7 @@ public class PlayerOneGUIImplementation extends javax.swing.JFrame implements Pl
     }   
     
     public void notifyUser(String message) {  
-        System.out.println("Tic : "+message);
+        System.out.println("PlayerOne : "+message);
         //logTA.append(message+"\n");   
     } 
     
